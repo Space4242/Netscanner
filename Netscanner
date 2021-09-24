@@ -1,0 +1,24 @@
+import scapy.all as scapy
+import optparse
+
+def get_user_input():
+    my_object = optparse.OptionParser
+    my_object.add_option("-i","-ip", dest="ip_address",help="please type ip address")
+    (user_inputs,arguments)=my_object.parse_args()
+    return user_inputs
+
+def scan(ip):
+    arp_packet = scapy.ARP(pdst=ip)
+    broadcast_packet = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
+    arp_and_broadcast_packet = broadcast_packet/arp_packet
+    answered_list = scapy.srp(arp_and_broadcast_packet,timeout=1)
+    answered_list.summary()
+
+def result_scan(scan_list):
+    print("IP\t\t\tMAC\n-----------------------------------------------------")
+    for client in scan_list:
+        print(client["ip"]+ "\t\t" + client["mac"])
+
+user_ip_address = get_user_input()
+scan_network = user_ip_address.ipaddress
+
